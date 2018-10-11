@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <p>Qiita 言語別記事一覧</p>
+    <div>
+        <button onclick="localStorage.clear()">ローカルストレージ・クリア</button>
+        <button onclick="getLanguageData()">言語別データ取得</button>
+        <button onclick="console.log(fillterByLang())">言語別データにフィルタリング</button>
+    </div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        let dataset = fillterByLang();
+        console.log(dataset);
+        const sigW = 1860;
+        const sigH = 2024;
+        let svg = d3.select('body')
+            .append('svg')
+            .attr('width', sigW)
+            .attr('height', sigH);
+        console.log(svg);
+        console.log('max', d3.max(dataset, (d) => d.items_count));
+        let scale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, d => d.items_count)])
+            .range([0, sigH]);
+        console.log(scale);
+        let barchart = svg.selectAll('rect')
+            .data(dataset)
+            .enter()
+            .append('rect')
+            .attr('x', 0)
+            .attr('y', (d, i) => i * 22)
+            .attr('width', d => scale(d.items_count))
+            .attr('height', 20)
+            .attr('fill', '#6fbadd')
+            ;
+        svg.selectAll('text')
+            .data(dataset)
+            .enter()
+            .append('text')
+            .text(d => `${d.id} (${d.items_count}記事)`)
+            .attr('x', 5)
+            .attr('y', (d, i) => (i * 22) + 15)
+    </script>
+</body>
+</html>
